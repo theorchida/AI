@@ -3,6 +3,7 @@ import cv2
 # pre trainted face/smile detector
 trained_face_data = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 trained_smile_data = cv2.CascadeClassifier('haarcascade_smile.xml')
+trained_eye_data = cv2.CascadeClassifier('haarcascade_eye.xml')
 
 # read img
 #img = cv2.imread('pic.jpg')
@@ -44,16 +45,20 @@ while True:
             cv2.putText(frame, 'smiling', (x, y+h+40), fontScale=2,
             fontFace=cv2.FONT_HERSHEY_PLAIN, color=(255, 255, 255))
 
+        # detect eyes within face
+        eye_coordinates = trained_eye_data.detectMultiScale(face_grayscale, scaleFactor = 1.05, minNeighbors = 15)
+        # draw rec around eyes
+        for (x_, y_, w_, h_) in eye_coordinates:
+            cv2.rectangle(the_face, (x_, y_), (x_+w_, y_+h_), (0, 255, 255), 2)
+            
     # show image
-    cv2.imshow('Smile Detector', frame)
+    cv2.imshow('Smile and Eye Detector', frame)
     key = cv2.waitKey(1)
 
     if key == 81 or key == 113:
         break
 
 webcam.release()
-cv2.destroyWindow('Smile Detector')
-
-
+cv2.destroyWindow('Smile and Eye Detector')
 
 print('code completed')
